@@ -7,24 +7,6 @@ import { MockEmailSendService } from '../../src/common/service/mock-email-send-s
 import { applyAppSettings } from '../../src/settings/apply-app-settings';
 import request from 'supertest';
 
-/*ТЕСТ получить коментарии к одному посту по айдишке поста
--РЕГИСТРАЦИЯ
--ПОДТВЕРЖДЕНИЕ РЕГИСТРАЦИИ
--ЛОГИНИЗАЦИЯ и из ответа логинизации
-беру accessToken -он нужен 
-для запроса на установку ЛайкСтатусДляПоста ибо защищенный
-это эндпоинт  .set('Authorization', `Bearer ${accessToken}`)
-
----создаю blog  // получаю blogId,
-
----создаю post для blog  // получаю postId
-
----cоздаю КОМЕНТАРИЙ для ПОСТА
-
-
-
-*/
-
 describe('tests for andpoint auth/logout', () => {
   const loginPasswordBasic64 = 'YWRtaW46cXdlcnR5';
 
