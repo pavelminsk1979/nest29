@@ -51,7 +51,7 @@ export class AuthController {
          httpOnly: true означает, что cookie будет доступно только для
           HTTP-запросов, а не для JavaScript-скриптов на клиенте.
          secure: true означает, что cookie будет передаваться только по
-          защищенному (HTTPS) соединению.*/
+          защищенному (HTTPS) соединению. ok*/
       response.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: true,
