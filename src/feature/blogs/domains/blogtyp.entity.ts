@@ -1,5 +1,12 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Posttyp } from '../../posts/domains/posttyp.entity';
+import { Usertyp } from '../../users/domains/usertyp.entity';
 
 @Entity()
 /*не создает таблицы без
@@ -26,4 +33,7 @@ export class Blogtyp {
 
   @Column()
   isMembership: boolean;
+
+  @ManyToOne(() => Usertyp, (usertyp) => usertyp.blogtyp, { nullable: true })
+  public usertyp: Usertyp | null;
 }

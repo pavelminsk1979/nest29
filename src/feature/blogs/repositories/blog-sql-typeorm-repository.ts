@@ -12,6 +12,24 @@ export class BlogSqlTypeormRepository {
     private readonly blogtypRepository: Repository<Blogtyp>,
   ) {}
 
+  async createNewBlogForCorrectUser(newBlog: CreateBlog) {
+    const result = await this.blogtypRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Blogtyp)
+      .values({
+        createdAt: newBlog.createdAt,
+        isMembership: newBlog.isMembership,
+        name: newBlog.name,
+        description: newBlog.description,
+        websiteUrl: newBlog.websiteUrl,
+        usertyp: newBlog.usertyp ? newBlog.usertyp : null,
+      })
+      .execute();
+
+    return result.raw[0].id;
+  }
+
   async createNewBlog(newBlog: CreateBlog) {
     const result = await this.blogtypRepository
       .createQueryBuilder()

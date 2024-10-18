@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Securitydevicetyp } from '../../security-device/domains/securitydevicetype.entity';
 import { LikeStatusForPostTyp } from '../../like-status-for-post/domain/typ-like-status-for-post.entity';
+import { Blogtyp } from '../../blogs/domains/blogtyp.entity';
 
 @Entity()
 /*не создает таблицы без
@@ -74,6 +75,9 @@ export class Usertyp {
 
   @OneToMany(() => LikeStatusForPostTyp, 'usertyp')
   public likeStatusForPostTyp: LikeStatusForPostTyp;
+
+  @OneToMany(() => Blogtyp, 'usertyp')
+  public blogtyp: Blogtyp[];
 }
 
 /*

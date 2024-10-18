@@ -18,7 +18,6 @@ import { AuthTokenGuard } from '../../../common/guard/auth-token-guard';
 import { BloggerService } from '../services/blogger-service';
 import { BlogQuerySqlTypeormRepository } from '../../blogs/repositories/blog-query-sql-typeorm-repository';
 import { QueryParamsInputModel } from '../../../common/pipes/query-params-input-model';
-import { AuthGuard } from '../../../common/guard/auth-guard';
 import { DataUserExtractorFromTokenGuard } from '../../../common/guard/data-user-extractor-from-token-guard';
 import { CreatePostForBlogInputModel } from '../../blogs/api/pipes/create-post-for-blog-input-model';
 import { PostService } from '../../posts/services/post-service';
@@ -35,10 +34,27 @@ export class BloggerController {
     protected postQuerySqlTypeormRepository: PostQuerySqlTypeormRepository,
   ) {}
 
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, DataUserExtractorFromTokenGuard)
   @Post('blogs')
-  async createBlog(@Body() createBlogInputModel: CreateBlogInputModel) {
-    const blogId = await this.bloggerService.createBlog(createBlogInputModel);
+  async createBlog(
+    @Body() createBlogInputModel: CreateBlogInputModel,
+    @Req() request: Request,
+  ) {
+    const userId: string | null = request['userId'];
+
+    if (!userId) {
+      {
+        throw new NotFoundException(
+          'user not exist:andpoint-Post ,url /blogger/blogs',
+        );
+      }
+    }
+
+    const blogId = await this.bloggerService.createBlogForCorrectUser(
+      createBlogInputModel,
+      userId,
+    );
+
     const blog = await this.blogQuerySqlTypeormRepository.getBlogById(blogId);
 
     return blog;

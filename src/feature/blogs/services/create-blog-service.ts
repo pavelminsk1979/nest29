@@ -22,6 +22,7 @@ export class CreateBlogService {
       websiteUrl,
       createdAt: new Date().toISOString(),
       isMembership: false,
+      usertyp: null,
     };
 
     return this.blogSqlTypeormRepository.createNewBlog(newBlog);
