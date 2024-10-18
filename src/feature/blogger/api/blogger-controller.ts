@@ -60,11 +60,17 @@ export class BloggerController {
     return blog;
   }
 
-  @UseGuards(AuthTokenGuard)
+  @UseGuards(AuthTokenGuard, DataUserExtractorFromTokenGuard)
   @Get('blogs')
-  async getAllBlogs(@Query() queryParamsBlogInputModel: QueryParamsInputModel) {
+  async getAllBlogs(
+    @Query() queryParamsBlogInputModel: QueryParamsInputModel,
+    @Req() request: Request,
+  ) {
+    const userId: string | null = request['userId'];
+
     const blogs = await this.blogQuerySqlTypeormRepository.getBlogs(
       queryParamsBlogInputModel,
+      userId,
     );
 
     return blogs;

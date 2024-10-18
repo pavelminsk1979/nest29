@@ -110,6 +110,19 @@ describe('tests for andpoint auth/logout', () => {
     //console.log(res.body);
   });
 
+  it('create   blog3 without user', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/blogs')
+      .send({
+        name: 'name4',
+        description: 'description4',
+        websiteUrl: 'https://www.outue4.com/',
+      })
+      .expect(201);
+
+    //console.log(res.body);
+  });
+
   it('get all blogs', async () => {
     const res = await request(app.getHttpServer())
       .get('/blogger/blogs')

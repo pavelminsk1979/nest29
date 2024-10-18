@@ -54,8 +54,10 @@ export class BlogController {
 
   @Get()
   async getBlogs(@Query() queryParamsBlogInputModel: QueryParamsInputModel) {
+    const userId = null;
     const blogs = await this.blogQuerySqlTypeormRepository.getBlogs(
       queryParamsBlogInputModel,
+      userId,
     );
 
     return blogs;

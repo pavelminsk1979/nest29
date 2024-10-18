@@ -15,7 +15,10 @@ export class BlogQuerySqlTypeormRepository {
     private readonly blogtypeRepository: Repository<Blogtyp>,
   ) {}
 
-  async getBlogs(queryParamsBlog: QueryParamsInputModel) {
+  async getBlogs(
+    queryParamsBlog: QueryParamsInputModel,
+    userId: string | null,
+  ) {
     const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } =
       queryParamsBlog;
 
@@ -93,16 +96,29 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
     } else {
       sortDir = 'DESC';
     }
-
-    const result: [Blogtyp[], number] = await this.blogtypeRepository
-      .createQueryBuilder('b')
-      .where('b.name ILIKE :searchNameTerm', {
-        searchNameTerm: `%${searchNameTerm}%`,
-      })
-      .orderBy(`b.${sortBy}`, sortDir)
-      .skip(amountSkip)
-      .take(pageSize)
-      .getManyAndCount();
+    let result;
+    if (userId) {
+      result = await this.blogtypeRepository
+        .createQueryBuilder('b')
+        .where('b.name ILIKE :searchNameTerm', {
+          searchNameTerm: `%${searchNameTerm}%`,
+        })
+        .andWhere('b.usertyp = :userId', { userId })
+        .orderBy(`b.${sortBy}`, sortDir)
+        .skip(amountSkip)
+        .take(pageSize)
+        .getManyAndCount();
+    } else {
+      result = await this.blogtypeRepository
+        .createQueryBuilder('b')
+        .where('b.name ILIKE :searchNameTerm', {
+          searchNameTerm: `%${searchNameTerm}%`,
+        })
+        .orderBy(`b.${sortBy}`, sortDir)
+        .skip(amountSkip)
+        .take(pageSize)
+        .getManyAndCount();
+    }
 
     /*
   далее перед отправкой на фронтенд отмамплю записи из

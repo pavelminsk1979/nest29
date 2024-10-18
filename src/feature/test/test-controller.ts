@@ -36,9 +36,9 @@ export class TestController {
     await this.commenttypRepository.delete({});
     await this.likeForPostTypRepository.delete({});
     await this.securitydeviceRepository.delete({});
-    await this.usertypRepository.delete({});
     await this.posttypRepository.delete({});
     await this.blogtypRepository.delete({});
+    await this.usertypRepository.delete({});
   }
 
   return;
