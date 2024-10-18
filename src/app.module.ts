@@ -96,6 +96,8 @@ import { CommentSqlTypeormRepository } from './feature/comments/reposetories/com
 import { CommentQuerySqlTypeormRepository } from './feature/comments/reposetories/comment-query-sql-typeorm-repository';
 import { LikeStatusForCommentTyp } from './feature/like-status-for-comment/domain/typ-like-status-for-comment.entity';
 import { TypLikeStatusForCommentSqlRepository } from './feature/like-status-for-comment/repositories/typ-like-status-for-comment-sql-repository';
+import { BloggerController } from './feature/blogger/api/blogger-controller';
+import { BloggerService } from './feature/blogger/services/blogger-service';
 
 dotenv.config();
 
@@ -310,6 +312,7 @@ dotenv.config();
     AuthController,
     SecurityDeviceController,
     SaBlogController,
+    BloggerController,
   ],
   /* все сервисы приложения должны тут добавлены */
   providers: [
@@ -366,6 +369,7 @@ dotenv.config();
     CommentSqlTypeormRepository,
     CommentQuerySqlTypeormRepository,
     TypLikeStatusForCommentSqlRepository,
+    BloggerService,
   ],
 })
 /*export class AppModule {} в данном контексте

@@ -228,7 +228,7 @@ pagesCount это число
           будет делатся ВЬЮМОДЕЛЬ которую ожидает 
           фронтенд, внутри будет информация об 
           посте и об лайках к этому посту*/
-      debugger;
+
       if (arrayPostLikeManyPostId.length === 0) {
         const viewPostWithInfoLike = this.createViewModelOnePostWithLikeInfo(
           userId,
@@ -338,7 +338,7 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
       .skip(amountSkip)
       .take(pageSize)
       .getManyAndCount();
-    debugger;
+
     /*    result: [Blogtyp[], number]     возвращает кортеж, 
   где первый элемент - массив объектов, удовлетворяющих
    запросу, а второй элемент - общее количество записей
@@ -468,7 +468,6 @@ pagesCount это число
         },
       };
     } else {
-      debugger;
       const arrayStatusLike: LikeStatusForPostTyp[] =
         arrayPostLikeForOnePost.filter((e) => e.likeStatus === LikeStatus.LIKE);
 
