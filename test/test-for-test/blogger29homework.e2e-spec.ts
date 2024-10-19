@@ -250,7 +250,7 @@ describe('tests for andpoint auth/logout', () => {
       .put(`/sa/blogs/${blogId3}/bind-with-user/${userId}`)
       .set('Authorization', `Basic ${loginPasswordBasic64}`)
 
-      .expect(200);
+      .expect(204);
 
     console.log(res.body);
   });

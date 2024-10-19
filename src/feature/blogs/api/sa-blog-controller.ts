@@ -29,6 +29,7 @@ import { PostService } from '../../posts/services/post-service';
 import { BlogQuerySqlTypeormRepository } from '../repositories/blog-query-sql-typeorm-repository';
 import { PostQuerySqlTypeormRepository } from '../../posts/repositories/post-query-sql-typeorm-repository';
 import { DataUserExtractorFromTokenGuard } from '../../../common/guard/data-user-extractor-from-token-guard';
+import { AddBlogToUserCommand } from '../services/add-blog-to-user-service';
 
 @Controller('sa/blogs')
 export class SaBlogController {
@@ -299,10 +300,12 @@ export class SaBlogController {
     @Param('userId') userId: string,
     @Param('blogId') blogId: string,
   ) {
-    const isAddBlogToUser = true;
+    const isAddBlogToUser = await this.commandBus.execute(
+      new AddBlogToUserCommand(blogId, userId),
+    );
 
     if (isAddBlogToUser) {
-      return ;
+      return;
     } else {
       throw new NotFoundException(
         'NotFound:andpoint-put ,url -/sa/blogs/:blogId/bind-with-user/:userId',

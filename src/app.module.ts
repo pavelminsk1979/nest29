@@ -98,6 +98,7 @@ import { LikeStatusForCommentTyp } from './feature/like-status-for-comment/domai
 import { TypLikeStatusForCommentSqlRepository } from './feature/like-status-for-comment/repositories/typ-like-status-for-comment-sql-repository';
 import { BloggerController } from './feature/blogger/api/blogger-controller';
 import { BloggerService } from './feature/blogger/services/blogger-service';
+import { AddBlogToUserService } from './feature/blogs/services/add-blog-to-user-service';
 
 dotenv.config();
 
@@ -370,6 +371,7 @@ dotenv.config();
     CommentQuerySqlTypeormRepository,
     TypLikeStatusForCommentSqlRepository,
     BloggerService,
+    AddBlogToUserService,
   ],
 })
 /*export class AppModule {} в данном контексте

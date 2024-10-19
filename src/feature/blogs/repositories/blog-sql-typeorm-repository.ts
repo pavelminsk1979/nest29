@@ -12,6 +12,23 @@ export class BlogSqlTypeormRepository {
     private readonly blogtypRepository: Repository<Blogtyp>,
   ) {}
 
+  async addBlogToUser(blogId: string, userId: string) {
+    const result = await this.blogtypRepository
+      .createQueryBuilder()
+      .update(Blogtyp)
+      .set({ usertyp: { id: userId } })
+      .where('id = :blogId', { blogId })
+      .execute();
+
+    /*   result.affected  может быть значение undefined  или ноль
+       это если неуспешно операция прошла.... или число(1 или 2 или3) - это сколько записей обновилось успешно */
+    if (result.affected) {
+      return true;
+    }
+
+    return false;
+  }
+
   async createNewBlogForCorrectUser(newBlog: CreateBlog) {
     const result = await this.blogtypRepository
       .createQueryBuilder()
