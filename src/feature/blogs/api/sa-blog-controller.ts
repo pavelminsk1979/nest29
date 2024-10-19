@@ -291,4 +291,22 @@ export class SaBlogController {
       );
     }
   }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Put(':blogId/bind-with-user/:userId')
+  async addBlogToUser(
+    @Param('userId') userId: string,
+    @Param('blogId') blogId: string,
+  ) {
+    const isAddBlogToUser = true;
+
+    if (isAddBlogToUser) {
+      return ;
+    } else {
+      throw new NotFoundException(
+        'NotFound:andpoint-put ,url -/sa/blogs/:blogId/bind-with-user/:userId',
+      );
+    }
+  }
 }

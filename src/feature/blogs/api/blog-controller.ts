@@ -46,7 +46,7 @@ export class BlogController {
     );
 
     if (blog) {
-      return blog;
+      return { blog };
     } else {
       throw new NotFoundException('blog not found:andpoint-post,url /blogs');
     }

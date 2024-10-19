@@ -8,6 +8,8 @@ import { applyAppSettings } from '../../src/settings/apply-app-settings';
 import request from 'supertest';
 
 describe('tests for andpoint auth/logout', () => {
+  const loginPasswordBasic64 = 'YWRtaW46cXdlcnR5';
+
   const login1 = 'login7';
 
   const password1 = 'passwor7';
@@ -21,6 +23,8 @@ describe('tests for andpoint auth/logout', () => {
   let blogId;
   let blogId2;
   let blogId3;
+
+  let userId;
 
   let accessToken;
 
@@ -72,7 +76,9 @@ describe('tests for andpoint auth/logout', () => {
     );
     code = result[0].confirmationCode;
 
-    //console.log(code);
+    userId = result[0].id;
+
+    //console.log(result[0]);
   });
 
   it('registration-confirmation  user', async () => {
@@ -92,6 +98,7 @@ describe('tests for andpoint auth/logout', () => {
       .expect(200);
 
     accessToken = res.body.accessToken;
+
     //console.log(accessToken);
   });
 
@@ -233,8 +240,18 @@ describe('tests for andpoint auth/logout', () => {
       })
       .expect(201);
 
-    blogId3 = res.body.id;
-
+    blogId3 = res.body.blog;
     //console.log(res.body);
+
+    //console.log(blogId3);
+  });
+  it('add blog to user', async () => {
+    const res = await request(app.getHttpServer())
+      .put(`/sa/blogs/${blogId3}/bind-with-user/${userId}`)
+      .set('Authorization', `Basic ${loginPasswordBasic64}`)
+
+      .expect(200);
+
+    console.log(res.body);
   });
 });
