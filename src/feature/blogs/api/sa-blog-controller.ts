@@ -52,6 +52,29 @@ export class SaBlogController {
   post 400,get 404, delete 404, put 400*/
 
   @UseGuards(AuthGuard)
+  @Get()
+  async getBlogsWithUserInfo(
+    @Query() queryParamsBlogInputModel: QueryParamsInputModel,
+  ) {
+    const blogs = await this.blogQuerySqlTypeormRepository.getBlogsWithUserInfo(
+      queryParamsBlogInputModel,
+    );
+    return blogs;
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('заменен')
+  async getBlogs(@Query() queryParamsBlogInputModel: QueryParamsInputModel) {
+    const userId = null;
+    const blogs = await this.blogQuerySqlTypeormRepository.getBlogs(
+      queryParamsBlogInputModel,
+      userId,
+    );
+
+    return blogs;
+  }
+
+  @UseGuards(AuthGuard)
   /*@HttpCode(HttpStatus.CREATED) необязательно
    * ибо метод пост поумолчанию HTTP-статус 201 */
   @Post()
@@ -75,18 +98,6 @@ export class SaBlogController {
     } else {
       throw new NotFoundException('blog not found:andpoint-post,url /blogs');
     }
-  }
-
-  @UseGuards(AuthGuard)
-  @Get()
-  async getBlogs(@Query() queryParamsBlogInputModel: QueryParamsInputModel) {
-    const userId = null;
-    const blogs = await this.blogQuerySqlTypeormRepository.getBlogs(
-      queryParamsBlogInputModel,
-      userId,
-    );
-
-    return blogs;
   }
 
   @Get(':id')

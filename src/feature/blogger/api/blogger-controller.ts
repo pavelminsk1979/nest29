@@ -82,10 +82,14 @@ export class BloggerController {
   async updateBlog(
     @Param('id') bologId: string,
     @Body() updateBlogInputModel: CreateBlogInputModel,
+    @Req() request: Request,
   ) {
+    const userId: string = request['userId'];
+
     const isUpdateBlog = await this.bloggerService.updateBlog(
       bologId,
       updateBlogInputModel,
+      userId,
     );
 
     if (isUpdateBlog) {
@@ -100,8 +104,13 @@ export class BloggerController {
   @UseGuards(AuthTokenGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('blogs/:id')
-  async deleteBlogById(@Param('id') blogId: string) {
-    const isDeleteBlogById = await this.bloggerService.deleteBlogById(blogId);
+  async deleteBlogById(@Param('id') blogId: string, @Req() request: Request) {
+    const userId: string = request['userId'];
+
+    const isDeleteBlogById = await this.bloggerService.deleteBlogById(
+      blogId,
+      userId,
+    );
 
     if (isDeleteBlogById) {
       return;

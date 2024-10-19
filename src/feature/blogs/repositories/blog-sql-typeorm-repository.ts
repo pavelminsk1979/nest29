@@ -75,6 +75,18 @@ export class BlogSqlTypeormRepository {
     return result;
   }
 
+  async getBlogByBlogIdWithUserInfo(blogId: string) {
+    const result = await this.blogtypRepository
+      .createQueryBuilder('b')
+      .leftJoinAndSelect('b.usertyp', 'u')
+      .where('b.id = :blogId', { blogId })
+      .getOne();
+
+    if (!result) return null;
+
+    return result;
+  }
+
   async updateBlog(blogId: string, updateBlogInputModel: CreateBlogInputModel) {
     const result = await this.blogtypRepository
       .createQueryBuilder()

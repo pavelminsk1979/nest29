@@ -16,17 +16,26 @@ describe('tests for andpoint auth/logout', () => {
 
   const email1 = 'avelminsk7@mail.ru';
 
+  const login2 = 'login722';
+
+  const password2 = 'passwor722';
+
+  const email2 = 'avelminsk722@mail.ru';
+
   let app;
 
   let code;
+  let code2;
 
   let blogId;
   let blogId2;
   let blogId3;
 
   let userId;
+  let userId2;
 
   let accessToken;
+  let accessToken2;
 
   let postId;
 
@@ -102,6 +111,53 @@ describe('tests for andpoint auth/logout', () => {
     //console.log(accessToken);
   });
 
+  it('registration  user2', async () => {
+    await request(app.getHttpServer())
+      .post('/auth/registration')
+      .send({
+        login: login2,
+        password: password2,
+        email: email2,
+      })
+      .expect(204);
+
+    const dataSource = await app.resolve(DataSource);
+
+    const result = await dataSource.query(
+      `
+        select *
+    from public."usertyp" u
+    where u.login = login
+        `,
+    );
+    code2 = result[1].confirmationCode;
+
+    userId2 = result[1].id;
+
+    //console.log(result[0]);
+  });
+
+  it('registration-confirmation  user2', async () => {
+    await request(app.getHttpServer())
+      .post('/auth/registration-confirmation')
+      .send({ code: code2 })
+      .expect(204);
+  });
+
+  it(' login  user', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        loginOrEmail: login2,
+        password: password2,
+      })
+      .expect(200);
+
+    accessToken2 = res.body.accessToken;
+
+    //console.log(accessToken);
+  });
+
   it('blogger create blog', async () => {
     const res = await request(app.getHttpServer())
       .post('/blogger/blogs')
@@ -151,6 +207,21 @@ describe('tests for andpoint auth/logout', () => {
       })
 
       .expect(204);
+
+    //console.log(res.body);
+  });
+
+  it('update blog', async () => {
+    const res = await request(app.getHttpServer())
+      .put(`/blogger/blogs/${blogId}`)
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({
+        name: 'name123',
+        description: 'description123',
+        websiteUrl: 'https://www.outue123.com/',
+      })
+
+      .expect(403);
 
     //console.log(res.body);
   });
@@ -251,6 +322,16 @@ describe('tests for andpoint auth/logout', () => {
       .set('Authorization', `Basic ${loginPasswordBasic64}`)
 
       .expect(204);
+
+    //console.log(res.body);
+  });
+
+  it('get all blogs with user info', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/sa/blogs')
+      .set('Authorization', `Basic ${loginPasswordBasic64}`)
+
+      .expect(200);
 
     console.log(res.body);
   });
