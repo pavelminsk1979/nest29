@@ -196,7 +196,7 @@ export class BloggerController {
   @UseGuards(AuthTokenGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Put('blogs/:id/posts/:postId')
-  async updatePost(
+  async updatePostForCorrectUser(
     @Param('postId') postId: string,
     @Param('id') blogId: string,
     @Body() updatePostInputModel: UpdatePostForCorrectBlogInputModel,
@@ -204,12 +204,13 @@ export class BloggerController {
   ) {
     const userId: string = request['userId'];
 
-    const isUpdatePost: boolean = await this.postService.updatePost(
-      blogId,
-      postId,
-      updatePostInputModel,
-      userId,
-    );
+    const isUpdatePost: boolean =
+      await this.postService.updatePostForCorrectUser(
+        blogId,
+        postId,
+        updatePostInputModel,
+        userId,
+      );
 
     if (isUpdatePost) {
       return;
@@ -223,14 +224,14 @@ export class BloggerController {
   @UseGuards(AuthTokenGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete('blogs/:id/posts/:postId')
-  async deletePost(
+  async deletePostForCorrectUser(
     @Param('postId') postId: string,
     @Param('id') blogId: string,
     @Req() request: Request,
   ) {
     const userId: string = request['userId'];
 
-    const isDeletePost: boolean = await this.postService.deletePost(
+    const isDeletePost: boolean = await this.postService.deletePostForCorrectUser(
       blogId,
       postId,
       userId,

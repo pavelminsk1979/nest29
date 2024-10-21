@@ -38,6 +38,76 @@ export class PostService {
     protected userSqlTypeormRepository: UserSqlTypeormRepository,
   ) {}
 
+  async updatePostForCorrectUser(
+    blogId: string,
+    postId: string,
+    updatePostInputModel: UpdatePostForCorrectBlogInputModel,
+    userId: string,
+  ): Promise<boolean> {
+    /*принадлежит ли блог пользователю КОТОРЫЙ ДЕЛАЕТ ЗАПРОС*/
+    const blog =
+      await this.blogSqlTypeormRepository.getBlogByBlogIdWithUserInfo(blogId);
+
+    if (!blog) {
+      return false;
+    }
+
+    if (!blog.usertyp || blog.usertyp.id !== userId) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
+
+    /*  проверить-- есть ли пост с данной айдишкой и
+    чтоб он принадлежал блогу с данной айдишкой*/
+
+    const post = await this.postSqlTypeormRepository.getPostById(postId);
+
+    if (!post) return false;
+
+    if (blogId !== post.blogtyp.id) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
+
+    return this.postSqlTypeormRepository.updatePost(
+      postId,
+      updatePostInputModel,
+    );
+  }
+
+  async deletePostForCorrectUser(
+    blogId: string,
+    postId: string,
+    userId: string,
+  ) {
+    /*принадлежит ли блог пользователю КОТОРЫЙ ДЕЛАЕТ ЗАПРОС*/
+    const blog =
+      await this.blogSqlTypeormRepository.getBlogByBlogIdWithUserInfo(blogId);
+
+    if (!blog) {
+      return false;
+    }
+
+    if (!blog.usertyp || blog.usertyp.id !== userId) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
+
+    /*  проверить-- есть ли пост с данной айдишкой и
+ чтоб он принадлежал блогу с данной айдишкой*/
+
+    const post = await this.postSqlTypeormRepository.getPostById(postId);
+
+    if (!post) return false;
+
+    if (blogId !== post.blogtyp.id) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
+
+    return this.postSqlTypeormRepository.deletePost(postId);
+  }
+
   async createPostForCorrectBlog(
     blogId: string,
     createPostForBlogInputModel: CreatePostForBlogInputModel,
@@ -93,34 +163,15 @@ export class PostService {
     blogId: string,
     postId: string,
     updatePostInputModel: UpdatePostForCorrectBlogInputModel,
-    userId: string,
   ): Promise<boolean> {
-    /*принадлежит ли блог пользователю КОТОРЫЙ ДЕЛАЕТ ЗАПРОС*/
-    const blog =
-      await this.blogSqlTypeormRepository.getBlogByBlogIdWithUserInfo(blogId);
-
-    if (!blog) {
-      return false;
-    }
-
-    if (!blog.usertyp || blog.usertyp.id !== userId) {
-      /*   403 статус код */
-      throw new ForbiddenException('forbidden to put blogs');
-    }
-
     /*  проверить-- есть ли пост с данной айдишкой и
     чтоб он принадлежал блогу с данной айдишкой*/
 
     const post = await this.postSqlTypeormRepository.getPostById(postId);
-    console.log(';;;;;;;;;;;;;;;;;;;;;;;');
-    console.log(post);
-    console.log(';;;;;;;;;;;;;;;;;;;;;;;');
+
     if (!post) return false;
 
-    if (blogId !== post.blogtyp.id) {
-      /*   403 статус код */
-      throw new ForbiddenException('forbidden to put blogs');
-    }
+    if (blogId !== post.blogtyp.id) return false;
 
     return this.postSqlTypeormRepository.updatePost(
       postId,
@@ -128,20 +179,7 @@ export class PostService {
     );
   }
 
-  async deletePost(blogId: string, postId: string, userId: string) {
-    /*принадлежит ли блог пользователю КОТОРЫЙ ДЕЛАЕТ ЗАПРОС*/
-    const blog =
-      await this.blogSqlTypeormRepository.getBlogByBlogIdWithUserInfo(blogId);
-
-    if (!blog) {
-      return false;
-    }
-
-    if (!blog.usertyp || blog.usertyp.id !== userId) {
-      /*   403 статус код */
-      throw new ForbiddenException('forbidden to put blogs');
-    }
-
+  async deletePost(blogId: string, postId: string) {
     /*  проверить-- есть ли пост с данной айдишкой и
  чтоб он принадлежал блогу с данной айдишкой*/
 
@@ -149,10 +187,7 @@ export class PostService {
 
     if (!post) return false;
 
-    if (blogId !== post.blogtyp.id) {
-      /*   403 статус код */
-      throw new ForbiddenException('forbidden to put blogs');
-    }
+    if (blogId !== post.blogtyp.id) return false;
 
     return this.postSqlTypeormRepository.deletePost(postId);
   }
@@ -166,11 +201,11 @@ export class PostService {
     postId: string,
     likeStatus: LikeStatus,
   ) {
-    /* проверка- существует ли в базе такой ЮЗЕР 
-   И ТАКЖЕ ПОНАДОБИТСЯ ЧТОБЫ СОЗДАТЬ 
+    /* проверка- существует ли в базе такой ЮЗЕР
+   И ТАКЖЕ ПОНАДОБИТСЯ ЧТОБЫ СОЗДАТЬ
    НОВУЮ ЗАПИСЬ В ТАБЛИЦЕ ЛАЙКПОСТ
-   и также понадобится login  создателя--- этот 
-   login потребуется вдальнейшем когда буду 
+   и также понадобится login  создателя--- этот
+   login потребуется вдальнейшем когда буду
        формировать view для отдачи на фронт*/
 
     const user = await this.userSqlTypeormRepository.getUserById(userId);
@@ -216,8 +251,8 @@ export class PostService {
 
     /*Если документ есть тогда надо изменить
      statusLike в нем на приходящий и установить
-      теперещнюю дату  установки 
-      АЙДИШКУ ВОЗМУ ОТ НАЙДЕНОЙ ЗАПИСИ 
+      теперещнюю дату  установки
+      АЙДИШКУ ВОЗМУ ОТ НАЙДЕНОЙ ЗАПИСИ
       */
 
     const newDate = new Date().toISOString();

@@ -290,6 +290,20 @@ describe('tests for andpoint auth/logout', () => {
 
     //console.log(res.body);
   });
+  it('update post for correct blog', async () => {
+    const res = await request(app.getHttpServer())
+      .put(`/blogger/blogs/${blogId2}/posts/${postId}`)
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({
+        title: 'titleUpdate',
+        shortDescription: 'shortDescriptionUpdate',
+        content: 'content#content#contentUpdate',
+      })
+
+      .expect(403);
+
+    //console.log(res.body);
+  });
 
   it('delete post for correct blog', async () => {
     const res = await request(app.getHttpServer())
