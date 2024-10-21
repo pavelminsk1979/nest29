@@ -200,11 +200,15 @@ export class BloggerController {
     @Param('postId') postId: string,
     @Param('id') blogId: string,
     @Body() updatePostInputModel: UpdatePostForCorrectBlogInputModel,
+    @Req() request: Request,
   ) {
+    const userId: string = request['userId'];
+
     const isUpdatePost: boolean = await this.postService.updatePost(
       blogId,
       postId,
       updatePostInputModel,
+      userId,
     );
 
     if (isUpdatePost) {
@@ -222,10 +226,14 @@ export class BloggerController {
   async deletePost(
     @Param('postId') postId: string,
     @Param('id') blogId: string,
+    @Req() request: Request,
   ) {
+    const userId: string = request['userId'];
+
     const isDeletePost: boolean = await this.postService.deletePost(
       blogId,
       postId,
+      userId,
     );
 
     if (isDeletePost) {

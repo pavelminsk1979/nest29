@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Post, PostDocument } from '../domains/domain-post';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -93,15 +93,34 @@ export class PostService {
     blogId: string,
     postId: string,
     updatePostInputModel: UpdatePostForCorrectBlogInputModel,
+    userId: string,
   ): Promise<boolean> {
+    /*принадлежит ли блог пользователю КОТОРЫЙ ДЕЛАЕТ ЗАПРОС*/
+    const blog =
+      await this.blogSqlTypeormRepository.getBlogByBlogIdWithUserInfo(blogId);
+
+    if (!blog) {
+      return false;
+    }
+
+    if (!blog.usertyp || blog.usertyp.id !== userId) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
+
     /*  проверить-- есть ли пост с данной айдишкой и
     чтоб он принадлежал блогу с данной айдишкой*/
 
     const post = await this.postSqlTypeormRepository.getPostById(postId);
-
+    console.log(';;;;;;;;;;;;;;;;;;;;;;;');
+    console.log(post);
+    console.log(';;;;;;;;;;;;;;;;;;;;;;;');
     if (!post) return false;
 
-    if (blogId !== post.blogtyp.id) return false;
+    if (blogId !== post.blogtyp.id) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
 
     return this.postSqlTypeormRepository.updatePost(
       postId,
@@ -109,7 +128,20 @@ export class PostService {
     );
   }
 
-  async deletePost(blogId: string, postId: string) {
+  async deletePost(blogId: string, postId: string, userId: string) {
+    /*принадлежит ли блог пользователю КОТОРЫЙ ДЕЛАЕТ ЗАПРОС*/
+    const blog =
+      await this.blogSqlTypeormRepository.getBlogByBlogIdWithUserInfo(blogId);
+
+    if (!blog) {
+      return false;
+    }
+
+    if (!blog.usertyp || blog.usertyp.id !== userId) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
+
     /*  проверить-- есть ли пост с данной айдишкой и
  чтоб он принадлежал блогу с данной айдишкой*/
 
@@ -117,7 +149,10 @@ export class PostService {
 
     if (!post) return false;
 
-    if (blogId !== post.blogtyp.id) return false;
+    if (blogId !== post.blogtyp.id) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
 
     return this.postSqlTypeormRepository.deletePost(postId);
   }
