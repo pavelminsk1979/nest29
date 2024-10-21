@@ -138,6 +138,7 @@ export class BloggerController {
       await this.postService.createPostForCorrectBlog(
         blogId,
         createPostForBlogInputModel,
+        userId,
       );
 
     if (!postId) {
@@ -231,11 +232,8 @@ export class BloggerController {
   ) {
     const userId: string = request['userId'];
 
-    const isDeletePost: boolean = await this.postService.deletePostForCorrectUser(
-      blogId,
-      postId,
-      userId,
-    );
+    const isDeletePost: boolean =
+      await this.postService.deletePostForCorrectUser(blogId, postId, userId);
 
     if (isDeletePost) {
       return;

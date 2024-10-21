@@ -111,15 +111,26 @@ export class PostService {
   async createPostForCorrectBlog(
     blogId: string,
     createPostForBlogInputModel: CreatePostForBlogInputModel,
+    userId: string,
   ) {
     const { content, shortDescription, title } = createPostForBlogInputModel;
 
     /* нужно получить документ блога из базы чтобы взять от него
-поле blogName И ЗАОДНО ПРОВЕРИТЬ ЕСТЬ ТАКОЙ БЛОГ ИЛИ НЕТ В БАЗЕ */
-    const blog: Blogtyp | null =
-      await this.blogSqlTypeormRepository.getBlogByBlogId(blogId);
+поле blogName И ЗАОДНО ПРОВЕРИТЬ ЕСТЬ ТАКОЙ БЛОГ ИЛИ НЕТ В БАЗЕ 
+ */
 
-    if (!blog) return null;
+    /*принадлежит ли блог пользователю КОТОРЫЙ ДЕЛАЕТ ЗАПРОС*/
+    const blog =
+      await this.blogSqlTypeormRepository.getBlogByBlogIdWithUserInfo(blogId);
+
+    if (!blog) {
+      return false;
+    }
+
+    if (!blog.usertyp || blog.usertyp.id !== userId) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
 
     /* создаю документ post */
     const newPost: CreatePostTypeorm = {
