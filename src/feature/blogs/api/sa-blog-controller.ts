@@ -156,7 +156,6 @@ export class SaBlogController {
     @Body() createPostForBlogInputModel: CreatePostForBlogInputModel,
     @Req() request: Request,
   ) {
-    debugger;
     /* чтобы переиспользовать в этом обработчике метод
  getPostById  ему нужна (userId)- она будет 
  в данном случае null но главное что удовлетворяю
@@ -172,6 +171,7 @@ export class SaBlogController {
       await this.postService.createPostForCorrectBlog(
         blogId,
         createPostForBlogInputModel,
+        userId,
       );
 
     if (!postId) {

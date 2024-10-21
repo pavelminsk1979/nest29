@@ -111,13 +111,17 @@ export class PostService {
   async createPostForCorrectBlog(
     blogId: string,
     createPostForBlogInputModel: CreatePostForBlogInputModel,
-    userId: string,
+    userId: string | null,
   ) {
     const { content, shortDescription, title } = createPostForBlogInputModel;
 
     /* нужно получить документ блога из базы чтобы взять от него
 поле blogName И ЗАОДНО ПРОВЕРИТЬ ЕСТЬ ТАКОЙ БЛОГ ИЛИ НЕТ В БАЗЕ 
  */
+    if (!userId) {
+      /*   403 статус код */
+      throw new ForbiddenException('forbidden to put blogs');
+    }
 
     /*принадлежит ли блог пользователю КОТОРЫЙ ДЕЛАЕТ ЗАПРОС*/
     const blog =
