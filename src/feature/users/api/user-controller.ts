@@ -72,17 +72,6 @@ export class UsersController {
   async createUser(@Body() createUserInputModel: CreateUserInputModel) {
     const user = await this.usersService.createUser(createUserInputModel);
 
-    /*   if (!userId) {
-         throw new BadRequestException([
-           {
-             message: 'user not create',
-             field: 'andpoint user, method post',
-           },
-         ]);
-       }
-   
-       const user = await this.userQuerySqlRepository.getUserById(userId);*/
-
     if (user) {
       return user;
     } else {
@@ -129,6 +118,7 @@ export class UsersController {
     @Param('id') userId: string,
     @Body() updateBanStatusInputModel: UpdateBanStatusInputModel,
   ) {
+    debugger
     const isStatusBanUpdate = await this.usersService.updateBanStatus(
       userId,
       updateBanStatusInputModel,
