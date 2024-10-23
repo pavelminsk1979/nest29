@@ -71,6 +71,11 @@ pagesCount это (число)  общее количество страниц �
         login: user.login,
         email: user.email,
         createdAt: user.createdAt,
+        banInfo: {
+          isBanned: user.isBanned,
+          banDate: user.banDate ? user.banDate : null,
+          banReason: user.banReason ? user.banReason : null,
+        },
       };
     });
 

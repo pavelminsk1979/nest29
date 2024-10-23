@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Comment, CommentDocument } from '../domaims/domain-comment';
@@ -14,10 +14,12 @@ import { LikeStatusForCommentTyp } from '../../like-status-for-comment/domain/ty
 import { TypLikeStatusForCommentSqlRepository } from '../../like-status-for-comment/repositories/typ-like-status-for-comment-sql-repository';
 import { PostSqlTypeormRepository } from '../../posts/repositories/post-sql-typeorm-repository';
 import { SortDir } from '../../blogs/api/types/dto';
+import { UserSqlTypeormRepository } from '../../users/repositories/user-sql-typeorm-repository';
 
 @Injectable()
 export class CommentQuerySqlTypeormRepository {
   constructor(
+    protected userSqlTypeormRepository: UserSqlTypeormRepository,
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
     protected typLikeStatusForCommentSqlRepository: TypLikeStatusForCommentSqlRepository,
     protected postSqlTypeormRepository: PostSqlTypeormRepository,
@@ -28,6 +30,19 @@ export class CommentQuerySqlTypeormRepository {
   ) {}
 
   async getCommentById(userId: string | null, commentId: string) {
+    /* если  юзер забанен то не должен возвратить коментарий */
+    console.log(userId);
+    if (userId) {
+      const user = await this.userSqlTypeormRepository.getUserById(userId);
+      console.log('llllllllllllllllllllllllll');
+      console.log(user);
+      console.log('llllllllllllllllllllllllll');
+
+      if (user && user.isBanned) {
+        throw new NotFoundException('NotFoundException');
+      }
+    }
+
     /*  сразу по commentId получу тот один комент который надо вернуть */
 
     const result = await this.commenttypormRepository

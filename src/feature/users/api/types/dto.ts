@@ -6,6 +6,9 @@ export type CreateUser = {
   confirmationCode: string;
   isConfirmed: boolean;
   expirationDate: string;
+  isBanned: boolean;
+  banReason: string;
+  banDate: string;
 };
 
 export type CreateUserWithId = {
@@ -17,4 +20,7 @@ export type CreateUserWithId = {
   confirmationCode: string;
   isConfirmed: boolean;
   expirationDate: string;
+  isBanned: boolean;
+  banReason: string;
+  banDate: string;
 };

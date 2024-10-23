@@ -48,8 +48,14 @@ export class CommentController {
     );
 
     if (comment) {
+      console.log('llllllllllllllllllllllllll');
+      console.log(1);
+      console.log('llllllllllllllllllllllllll');
       return comment;
     } else {
+      console.log('llllllllllllllllllllllllll');
+      console.log('error');
+      console.log('llllllllllllllllllllllllll');
       throw new NotFoundException(
         'comment not found:method-get,url /comments/id',
       );

@@ -59,6 +59,8 @@ export class AuthService {
      * и только потом можно ЗАЛОГИНИТСЯ */
     if (!user.isConfirmed) return null;
 
+    if (user.banDate && user.isBanned) return null;
+
     const passwordHash = user.passwordHash;
 
     /* делаю проверку-- на основании этого ли  пароля
@@ -181,6 +183,9 @@ export class AuthService {
       confirmationCode: randomCode(),
       isConfirmed: false,
       expirationDate: add(new Date(), { hours: 1, minutes: 2 }).toISOString(),
+      isBanned: false,
+      banReason: '',
+      banDate: '',
       /*
        expirationDate инициализируется значением, которое
        рассчитывается с использованием функции add из библиотеки date-fns (или подобной библиотеки для работы с датами)

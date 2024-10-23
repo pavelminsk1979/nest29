@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { CreateUserInputModel } from './pipes/create-user-input-model';
 import { AuthGuard } from '../../../common/guard/auth-guard';
 import { QueryParamsInputModel } from '../../../common/pipes/query-params-input-model';
 import { UserQuerySqlRepository } from '../repositories/user-query-sql-repository';
+import { UpdateBanStatusInputModel } from './pipes/update-ban-status-input-model';
 
 /*подключаю данный ГАРД для всех эндпоинтов user и поэтому
 подключение
@@ -116,6 +118,27 @@ export class UsersController {
       /*соответствует HTTP статус коду 404*/
       throw new NotFoundException(
         'user not found:andpoint-delete,url-users/id',
+      );
+    }
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(AuthGuard)
+  @Put(':id/ban')
+  async updateBanStatus(
+    @Param('id') userId: string,
+    @Body() updateBanStatusInputModel: UpdateBanStatusInputModel,
+  ) {
+    const isStatusBanUpdate = await this.usersService.updateBanStatus(
+      userId,
+      updateBanStatusInputModel,
+    );
+
+    if (isStatusBanUpdate) {
+      return;
+    } else {
+      throw new NotFoundException(
+        'user not found:andpoint-put,url-users/id/ban',
       );
     }
   }

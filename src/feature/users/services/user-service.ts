@@ -8,6 +8,7 @@ import { v4 as randomCode } from 'uuid';
 import { CreateUser } from '../api/types/dto';
 import { UserSqlTypeormRepository } from '../repositories/user-sql-typeorm-repository';
 import { Usertyp } from '../domains/usertyp.entity';
+import { UpdateBanStatusInputModel } from '../api/pipes/update-ban-status-input-model';
 
 @Injectable()
 /*@Injectable()-декоратор что данный клас
@@ -74,6 +75,9 @@ export class UsersService {
       confirmationCode: randomCode(),
       isConfirmed: true,
       expirationDate: new Date().toISOString(),
+      isBanned: false,
+      banReason: '',
+      banDate: '',
     };
 
     const result: Usertyp | null =
@@ -86,10 +90,40 @@ export class UsersService {
       login: result.login,
       email: result.email,
       createdAt: result.createdAt,
+      banInfo: {
+        isBanned: result.isBanned,
+        banDate: result.banDate ? result.banDate : null,
+        banReason: result.banReason ? result.banReason : null,
+      },
     };
   }
 
   async deleteUserById(userId: string) {
     return this.userSqlTypeormRepository.deleteUserById(userId);
+  }
+
+  async updateBanStatus(
+    userId: string,
+    updateBanStatusInputModel: UpdateBanStatusInputModel,
+  ) {
+    const { isBanned, banReason } = updateBanStatusInputModel;
+
+    const user = await this.userSqlTypeormRepository.getUserById(userId);
+
+    if (!user) return false;
+
+    user.isBanned = isBanned;
+
+    if (isBanned) {
+      user.banReason = banReason;
+
+      user.banDate = new Date().toISOString();
+    } else {
+      user.banReason = '';
+
+      user.banDate = '';
+    }
+
+    return this.userSqlTypeormRepository.changeUser(user);
   }
 }

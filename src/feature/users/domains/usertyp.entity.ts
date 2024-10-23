@@ -68,7 +68,16 @@ export class Usertyp {
   public confirmationCode: string;
 
   @Column()
+  public banReason: string;
+
+  @Column()
+  public banDate: string;
+
+  @Column()
   public isConfirmed: boolean;
+
+  @Column()
+  public isBanned: boolean;
 
   @Column()
   public expirationDate: string;

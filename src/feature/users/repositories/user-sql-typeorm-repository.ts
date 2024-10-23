@@ -20,6 +20,9 @@ export class UserSqlTypeormRepository {
     user.confirmationCode = newUser.confirmationCode;
     user.isConfirmed = newUser.isConfirmed;
     user.passwordHash = newUser.passwordHash;
+    user.isBanned = newUser.isBanned;
+    user.banReason = newUser.banReason;
+    user.banDate = newUser.banDate;
     const result = await this.usertypRepository.save(user);
     return result;
   }
