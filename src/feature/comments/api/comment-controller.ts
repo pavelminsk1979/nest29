@@ -32,6 +32,7 @@ export class CommentController {
     @Param('id') commentId: string,
     @Req() request: Request,
   ) {
+    debugger
     /*Айдишка пользователя нужна для-- когда
 отдадим ответ в нем будет информация
 о том какой статус учтановил данный пользователь

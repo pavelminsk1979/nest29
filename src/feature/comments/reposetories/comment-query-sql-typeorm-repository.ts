@@ -30,12 +30,11 @@ export class CommentQuerySqlTypeormRepository {
   ) {}
 
   async getCommentById(userId: string | null, commentId: string) {
-
-    /* если  юзер забанен то не должен возвратить коментарий */
-
+    debugger;
     if (userId) {
-      const user = await this.userSqlTypeormRepository.getUserById(userId);
+      /* если  юзер забанен то не должен возвратить коментарий */
 
+      const user = await this.userSqlTypeormRepository.getUserById(userId);
 
       if (user && user.isBanned) {
         throw new NotFoundException('NotFoundException');
@@ -43,7 +42,7 @@ export class CommentQuerySqlTypeormRepository {
     }
 
     /*  сразу по commentId получу тот один комент который надо вернуть */
-debugger
+
     const result = await this.commenttypormRepository
       .createQueryBuilder('com')
       .leftJoinAndSelect('com.posttyp', 'p')
@@ -51,6 +50,21 @@ debugger
       .getOne();
 
     if (!result) return null;
+
+    if (userId && result.userId !== userId) {
+      const user = await this.userSqlTypeormRepository.getUserById(userId);
+
+      if (user && user.isBanned) {
+        throw new NotFoundException('NotFoundException');
+      }
+    }
+
+    /*   if (userId && result.userId !== userId) {
+         /!* если коментарий хочет получить юзер который этот
+     коментарий не ставил *!/
+   
+         return null;
+       }*/
 
     const comment: Commenttyp = result;
 
