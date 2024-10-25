@@ -31,6 +31,7 @@ describe('tests for andpoint auth/logout', () => {
   let accessToken2;
 
   let blogId;
+  let blogId2;
 
   let idPost;
 
@@ -97,37 +98,21 @@ describe('tests for andpoint auth/logout', () => {
     //console.log(accessToken);
   });
 
-  /*  it('create   blog1', async () => {
-      const res = await request(app.getHttpServer())
-        .post('/blogger/blogs')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .send({
-          name: 'name11',
-          description: 'description11',
-          websiteUrl: 'https://www.outue11.com/',
-        })
-        .expect(201);
-  
-      blogId = res.body.id;
-  
-      //console.log(res.body);
-    });*/
+  it('create   blog1', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/blogger/blogs')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        name: 'name11',
+        description: 'description11',
+        websiteUrl: 'https://www.outue11.com/',
+      })
+      .expect(201);
 
-  /*  it('create   post1', async () => {
-      const res = await request(app.getHttpServer())
-        .post(`/blogger/blogs/${blogId}/posts`)
-        .set('Authorization', `Bearer ${accessToken}`)
-        .send({
-          title: 'title11',
-          shortDescription: 'shortDescription11',
-          content: 'content-content-content-content',
-        })
-        .expect(201);
-  
-      idPost = res.body.id;
-  
-      //console.log(res.body);
-    });*/
+    blogId = res.body.id;
+
+    //console.log(res.body);
+  });
 
   it('create user2', async () => {
     await request(app.getHttpServer())
@@ -167,71 +152,120 @@ describe('tests for andpoint auth/logout', () => {
     //console.log(accessToken);
   });
 
-  /*  it('get users', async () => {
-      const res = await request(app.getHttpServer())
-        .get('/sa/users')
-        .set('Authorization', `Basic ${loginPasswordBasic64}`)
-  
-        .expect(200);
-  
-      //console.log(res.body);
-    });*/
+  it('create   blog2', async () => {
+    const res = await request(app.getHttpServer())
+      .post('/blogger/blogs')
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({
+        name: 'name22',
+        description: 'description22',
+        websiteUrl: 'https://www.outue22.com/',
+      })
+      .expect(201);
 
-  /*  it('create comment for post1 ', async () => {
-      const res = await request(app.getHttpServer())
-        .post(`/posts/${idPost}/comments`)
-        .set('Authorization', `Bearer ${accessToken2}`)
-        .send({
-          content: 'content2 for post content2 for post content2 for post',
-        })
-        .expect(201);
-  
-      //console.log(res.body);
-  
-      commentsId = res.body.id;
-    });*/
+    blogId2 = res.body.id;
 
-  /*  it('get correct comment', async () => {
-      const res = await request(app.getHttpServer())
-        .get(`/comments/${commentsId}`)
-        .set('Authorization', `Bearer ${accessToken}`)
-  
-        .expect(200);
-  
-      console.log(res.body);
-    });*/
+    //console.log(res.body);
+  });
 
   it('ban correct user', async () => {
     await request(app.getHttpServer())
-      .put(`/sa/users/${userId2}/ban`)
-      .set('Authorization', `Basic ${loginPasswordBasic64}`)
+      .put(`/blogger/users/${userId2}/ban`)
+      .set('Authorization', `Bearer ${accessToken}`)
       .send({
         isBanned: true,
-        banReason: 'very very very bad boy',
+        banReason: 'very very very bad boy2',
+        blogId: blogId,
       })
       .expect(204);
   });
 
   it('get users', async () => {
     const res = await request(app.getHttpServer())
-      .get('/sa/users?banStatus=banned')
-      .set('Authorization', `Basic ${loginPasswordBasic64}`)
+      .get(`/blogger/users/blogs/${blogId}`)
+      .set('Authorization', `Bearer ${accessToken}`)
 
       .expect(200);
 
-    console.log(res.body.items);
+    console.log(res.body);
   });
-
-  /*  it('get correct comment', async () => {
-      const res = await request(app.getHttpServer())
-        .get(`/comments/${commentsId}`)
-        .set('Authorization', `Bearer ${accessToken}`)
-  
-        .expect(404);
-  
-      //console.log(res.body);
-    });*/
 });
+
+/*  it('get users', async () => {
+     const res = await request(app.getHttpServer())
+       .get('/sa/users')
+       .set('Authorization', `Basic ${loginPasswordBasic64}`)
+
+       .expect(200);
+
+     //console.log(res.body);
+   });*/
+
+/*  it('create comment for post1 ', async () => {
+    const res = await request(app.getHttpServer())
+      .post(`/posts/${idPost}/comments`)
+      .set('Authorization', `Bearer ${accessToken2}`)
+      .send({
+        content: 'content2 for post content2 for post content2 for post',
+      })
+      .expect(201);
+
+    //console.log(res.body);
+
+    commentsId = res.body.id;
+  });*/
+
+/*  it('get correct comment', async () => {
+    const res = await request(app.getHttpServer())
+      .get(`/comments/${commentsId}`)
+      .set('Authorization', `Bearer ${accessToken}`)
+
+      .expect(200);
+
+    console.log(res.body);
+  });*/
+
+/*  it('get correct comment', async () => {
+     const res = await request(app.getHttpServer())
+       .get(`/comments/${commentsId}`)
+       .set('Authorization', `Bearer ${accessToken}`)
+
+       .expect(404);
+
+     //console.log(res.body);
+   });*/
+
+/*  it('create   blog1', async () => {
+     const res = await request(app.getHttpServer())
+       .post('/blogger/blogs')
+       .set('Authorization', `Bearer ${accessToken}`)
+       .send({
+         name: 'name11',
+         description: 'description11',
+         websiteUrl: 'https://www.outue11.com/',
+       })
+       .expect(201);
+
+     blogId = res.body.id;
+
+     //console.log(res.body);
+   });*/
+
+/*  it('create   post1', async () => {
+    const res = await request(app.getHttpServer())
+      .post(`/blogger/blogs/${blogId}/posts`)
+      .set('Authorization', `Bearer ${accessToken}`)
+      .send({
+        title: 'title11',
+        shortDescription: 'shortDescription11',
+        content: 'content-content-content-content',
+      })
+      .expect(201);
+
+    idPost = res.body.id;
+
+    //console.log(res.body);
+  });*/
 
 /*
 

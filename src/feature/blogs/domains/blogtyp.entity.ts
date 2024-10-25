@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Posttyp } from '../../posts/domains/posttyp.entity';
 import { Usertyp } from '../../users/domains/usertyp.entity';
+import { UserBan } from "../../blogger/domains/user-ban.entity";
 
 @Entity()
 /*не создает таблицы без
@@ -36,4 +37,7 @@ export class Blogtyp {
 
   @ManyToOne(() => Usertyp, (usertyp) => usertyp.blogtyp, { nullable: true })
   public usertyp: Usertyp | null;
+
+  @OneToMany(() => UserBan, 'blogtyp')
+  public userBan: UserBan[];
 }

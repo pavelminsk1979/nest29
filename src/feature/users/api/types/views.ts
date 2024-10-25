@@ -12,3 +12,13 @@ export type ViewArrayUsers = {
   totalCount: number;
   items: ViewUser[];
 };
+
+export type ViewUserBan = {
+  id: string;
+  login: string;
+  banInfo: {
+    isBanned: boolean;
+    banDate: string;
+    banReason: string;
+  };
+};

@@ -24,6 +24,8 @@ import { PostService } from '../../posts/services/post-service';
 import { PostQuerySqlTypeormRepository } from '../../posts/repositories/post-query-sql-typeorm-repository';
 import { ViewModelWithArrayPosts } from '../../posts/api/types/views';
 import { UpdatePostForCorrectBlogInputModel } from '../../posts/api/pipes/update-post-for-correct-blog-input-model';
+import { UpdateBanStatusWithBlogIdInputModel } from '../../users/api/pipes/update-ban-status-with-blogId-input-model';
+import { UserBanQueryRepository } from '../repositories/user-ban-query-repository';
 
 @Controller('blogger')
 export class BloggerController {
@@ -32,6 +34,7 @@ export class BloggerController {
     protected blogQuerySqlTypeormRepository: BlogQuerySqlTypeormRepository,
     protected postService: PostService,
     protected postQuerySqlTypeormRepository: PostQuerySqlTypeormRepository,
+    protected userBanQueryRepository: UserBanQueryRepository,
   ) {}
 
   @UseGuards(AuthTokenGuard, DataUserExtractorFromTokenGuard)
@@ -242,5 +245,50 @@ export class BloggerController {
         'post not update:andpoint-put ,url /posts/id',
       );
     }
+  }
+
+  @UseGuards(AuthTokenGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Put('users/:id/ban')
+  async setBanStatusForUser(
+    @Param('id') userIdUriParam: string,
+    @Body()
+    updateBanStatusWithBlogIdInputModel: UpdateBanStatusWithBlogIdInputModel,
+    @Req() request: Request,
+  ) {
+    const userId: string = request['userId'];
+
+    const isSetBanStatusForUser = await this.bloggerService.setBanStatusForUser(
+      userIdUriParam,
+      updateBanStatusWithBlogIdInputModel,
+      userId,
+    );
+
+    if (isSetBanStatusForUser) {
+      return;
+    } else {
+      throw new NotFoundException(
+        'blog not update:andpoint-put ,url /blogs/id',
+      );
+    }
+  }
+
+  @UseGuards(AuthTokenGuard)
+  @Get('users/blogs/:id')
+  async getAllBanBlogsForCorrectBlog(
+    @Param('id') blogId: string,
+    @Query() queryParamsBlogInputModel: QueryParamsInputModel,
+    @Req() request: Request,
+  ) {
+
+    const userId: string = request['userId'];
+
+    const blogs = await this.userBanQueryRepository.getBlogs(
+      queryParamsBlogInputModel,
+      userId,
+      blogId,
+    );
+
+    return blogs;
   }
 }

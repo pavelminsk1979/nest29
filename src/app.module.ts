@@ -99,6 +99,9 @@ import { TypLikeStatusForCommentSqlRepository } from './feature/like-status-for-
 import { BloggerController } from './feature/blogger/api/blogger-controller';
 import { BloggerService } from './feature/blogger/services/blogger-service';
 import { AddBlogToUserService } from './feature/blogs/services/add-blog-to-user-service';
+import { UserBan } from './feature/blogger/domains/user-ban.entity';
+import { UserBanRepository } from './feature/blogger/repositories/user-ban-repository';
+import { UserBanQueryRepository } from './feature/blogger/repositories/user-ban-query-repository';
 
 dotenv.config();
 
@@ -148,6 +151,7 @@ dotenv.config();
       LikeStatusForPostTyp,
       Commenttyp,
       LikeStatusForCommentTyp,
+      UserBan,
     ]),
 
     /*    --------type: 'postgres',    определяет  базу данных
@@ -372,6 +376,8 @@ dotenv.config();
     TypLikeStatusForCommentSqlRepository,
     BloggerService,
     AddBlogToUserService,
+    UserBanRepository,
+    UserBanQueryRepository,
   ],
 })
 /*export class AppModule {} в данном контексте

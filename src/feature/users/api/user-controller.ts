@@ -118,7 +118,6 @@ export class UsersController {
     @Param('id') userId: string,
     @Body() updateBanStatusInputModel: UpdateBanStatusInputModel,
   ) {
-
     const isStatusBanUpdate = await this.usersService.updateBanStatus(
       userId,
       updateBanStatusInputModel,
