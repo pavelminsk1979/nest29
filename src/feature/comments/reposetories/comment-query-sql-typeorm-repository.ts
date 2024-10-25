@@ -94,17 +94,33 @@ export class CommentQuerySqlTypeormRepository {
       );
 
     if (likecommentsForCorrectComent.length > 0) {
+      /*лайки забаненых юзеров НЕНАДО ВКЛЮЧАТЬ*/
+
+      const likecommentsForCorrectComentWithoutBanUser: LikeStatusForCommentTyp[] =
+        [];
+      for (let i = 0; i < likecommentsForCorrectComent.length; i++) {
+        const item: LikeStatusForCommentTyp = likecommentsForCorrectComent[i];
+
+        const user = await this.userSqlTypeormRepository.getUserById(
+          item.userId,
+        );
+
+        if (user && !user.isBanned) {
+          likecommentsForCorrectComentWithoutBanUser.push(item);
+        }
+      }
+
       /* получаю  массив документов с Like*/
 
       const like: LikeStatusForCommentTyp[] =
-        likecommentsForCorrectComent.filter(
+        likecommentsForCorrectComentWithoutBanUser.filter(
           (e) => e.likeStatus === LikeStatus.LIKE,
         );
 
       /* получаю  массив документов с DisLike*/
 
       const dislike: LikeStatusForCommentTyp[] =
-        likecommentsForCorrectComent.filter(
+        likecommentsForCorrectComentWithoutBanUser.filter(
           (e) => e.likeStatus === LikeStatus.DISLIKE,
         );
 
