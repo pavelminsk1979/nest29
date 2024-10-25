@@ -51,14 +51,10 @@ export class CommentQuerySqlTypeormRepository {
 
     if (!result) return null;
 
-    if (userId && result.userId !== userId) {
-      const user = await this.userSqlTypeormRepository.getUserById(
-        result.userId,
-      );
+    const user = await this.userSqlTypeormRepository.getUserById(result.userId);
 
-      if (user && user.isBanned) {
-        throw new NotFoundException('NotFoundException');
-      }
+    if (user && user.isBanned) {
+      throw new NotFoundException('NotFoundException');
     }
 
     /*   if (userId && result.userId !== userId) {
