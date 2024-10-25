@@ -28,6 +28,18 @@ export class UserBanRepository {
 
     return false;
   }
+
+  async findItemByBlogIdOrUserId(blogId: string, userId: string) {
+    const result = await this.userBanRepository.find({
+      where: { blogId, banUserId: userId },
+    });
+
+    /* в переменной result будет содержаться массив
+    объектов пользователей, которые удовлетворяют
+    условиям поиска по логину или почте*/
+    if (result.length === 0) return false;
+    return true;
+  }
 }
 
 /* async isExistLogin(login: string) {

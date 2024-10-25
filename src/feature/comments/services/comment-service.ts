@@ -17,6 +17,7 @@ import { CommentSqlTypeormRepository } from '../reposetories/comment-sql-typeorm
 import { Commenttyp } from '../domaims/commenttyp.entity';
 import { LikeStatusForCommentTyp } from '../../like-status-for-comment/domain/typ-like-status-for-comment.entity';
 import { TypLikeStatusForCommentSqlRepository } from '../../like-status-for-comment/repositories/typ-like-status-for-comment-sql-repository';
+import { UserBanRepository } from '../../blogger/repositories/user-ban-repository';
 
 @Injectable()
 /*@Injectable()-декоратор что данный клас
@@ -31,12 +32,11 @@ export class CommentService {
     @InjectModel(Comment.name) private commentModel: Model<CommentDocument>,
     @InjectModel(LikeStatusForComment.name)
     private likeStatusModelForComment: Model<LikeStatusForCommentDocument>,
-    protected commentSqlRepository: CommentSqlRepository,
-    protected likeStatusForCommentSqlRepository: LikeStatusForCommentSqlRepository,
     protected postSqlTypeormRepository: PostSqlTypeormRepository,
     protected userSqlTypeormRepository: UserSqlTypeormRepository,
     protected commentSqlTypeormRepository: CommentSqlTypeormRepository,
     protected typLikeStatusForCommentSqlRepository: TypLikeStatusForCommentSqlRepository,
+    protected userBanRepository: UserBanRepository,
   ) {}
 
   async createComment(userId: string, postId: string, content: string) {
@@ -47,12 +47,27 @@ export class CommentService {
 
     if (!post) return null;
 
+    const blogId = post.blogtyp.id;
+
     /* надо достать документ user по userId
     и из него взять userLogin*/
 
     const user = await this.userSqlTypeormRepository.getUserById(userId);
 
     if (!user) return null;
+
+    /*  обратится в таблицу ЮЗЕРБАН и поискать по
+      двум значениям БЛОГАЙДИ и ЮЗЕРАЙДИ*/
+
+    const item = await this.userBanRepository.findItemByBlogIdOrUserId(
+      blogId,
+      userId,
+    );
+
+    if (item) {
+      /*   403 статус код */
+      throw new ForbiddenException();
+    }
 
     const userLogin = user.login;
 
