@@ -12,6 +12,7 @@ import { Posttyp } from '../domains/posttyp.entity';
 import { BlogSqlTypeormRepository } from '../../blogs/repositories/blog-sql-typeorm-repository';
 import { Blogtyp } from '../../blogs/domains/blogtyp.entity';
 import { LikeStatusForPostTyp } from '../../like-status-for-post/domain/typ-like-status-for-post.entity';
+import { UserSqlTypeormRepository } from '../../users/repositories/user-sql-typeorm-repository';
 
 @Injectable()
 /*@Injectable()-декоратор что данный клас
@@ -23,6 +24,7 @@ import { LikeStatusForPostTyp } from '../../like-status-for-post/domain/typ-like
  возможно внедрить как зависимость*/
 export class PostQuerySqlTypeormRepository {
   constructor(
+    protected userSqlTypeormRepository: UserSqlTypeormRepository,
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     @InjectDataSource() protected dataSource: DataSource,
     @InjectRepository(Posttyp)
@@ -63,15 +65,15 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
 .orderBy(`b.${sortBy}`, sortDir)
 
 sortDir это кастыль чтоб весь код не упал
-     * ибо менять в енамке - и много где енамка используется 
+     * ибо менять в енамке - и много где енамка используется
     let sortDir: SortDir;
     if (sortDirection === 'asc') {
       sortDir = 'ASC';
     } else {
       sortDir = 'DESC';
     }
-    
-    
+
+
     ........................................
             ----Для вывода данных порциями используется
     два оператора:
@@ -105,7 +107,7 @@ sortDir это кастыль чтоб весь код не упал
       .take(pageSize)
       .getManyAndCount();
 
-    /*    result: [Blogtyp[], number]     возвращает кортеж, 
+    /*    result: [Blogtyp[], number]     возвращает кортеж,
   где первый элемент - массив объектов, удовлетворяющих
    запросу, а второй элемент - общее количество записей
     в базе данных, удовлетворяющих условию запроса
@@ -134,7 +136,7 @@ pagesCount это число
 далее перед отправкой на фронтенд 
 приведу массив arrayPosts к тому виду
 который ожидает  фронтенд
- и добавлю информацию из 
+ и добавлю информацию из
 таблицы ЛАЙКИ к ПОСТАМ 
 
 */
@@ -185,11 +187,29 @@ pagesCount это число
  тогда ПУСТОЙ МАССИВ,   если найдет запись
  тогда в массиве будетут  обьекты */
 
+    ////////////////////////////////////////////////////////////
+
+    /*лайки забаненых юзеров НЕНАДО ВКЛЮЧАТЬ*/
+
+    const likeForCorrectPostWithounBan: LikeStatusForPostTyp[] = [];
+
+    for (let i = 0; i < arrayLikeStatusForPostTypByPostId.length; i++) {
+      const item = arrayLikeStatusForPostTypByPostId[i];
+
+      const user = await this.userSqlTypeormRepository.getUserById(
+        item.usertyp.id,
+      );
+
+      if (user && !user.isBanned) {
+        likeForCorrectPostWithounBan.push(item);
+      }
+    }
+
     const viewModelOnePostWithLikeInfo: PostWithLikesInfo =
       this.createViewModelOnePostWithLikeInfo(
         userId,
         result,
-        arrayLikeStatusForPostTypByPostId,
+        likeForCorrectPostWithounBan,
       );
 
     return viewModelOnePostWithLikeInfo;
@@ -206,7 +226,7 @@ pagesCount это число
     НАДО ЗАДЖОЙНИТЬ ДАННЫЕ ЮЗЕРА ЧТОБ АЙДИШКУ
     ДОСТАТЬ
     из таблицы LikeStatusForPostTyp
-  достану все записи которые имеют id из 
+  достану все записи которые имеют id из
    массива  arrayPostId .... плюс записи будут отсортированы
   (первая самая новая)*/
 
@@ -219,14 +239,14 @@ pagesCount это число
         .orderBy('plike.addedAt', 'DESC')
         .getMany();
 
-    /*в arrayPostLikeManyPostId будет  массив --- если не найдет запись ,  
+    /*в arrayPostLikeManyPostId будет  массив --- если не найдет запись ,
    тогда ПУСТОЙ МАССИВ,   если найдет запись
    тогда  в массиве будетут обьекты */
 
     return arrayPosts.map((el: Posttyp) => {
       /*    тут для каждого элемента из массива постов
-          будет делатся ВЬЮМОДЕЛЬ которую ожидает 
-          фронтенд, внутри будет информация об 
+          будет делатся ВЬЮМОДЕЛЬ которую ожидает
+          фронтенд, внутри будет информация об
           посте и об лайках к этому посту*/
 
       if (arrayPostLikeManyPostId.length === 0) {
@@ -295,15 +315,15 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
 
 
     sortDir это кастыль чтоб весь код не упал
-     * ибо менять в енамке - и много где енамка используется 
+     * ибо менять в енамке - и много где енамка используется
     let sortDir: SortDir;
     if (sortDirection === 'asc') {
       sortDir = 'ASC';
     } else {
       sortDir = 'DESC';
     }
-    
-    
+
+
     ........................................
             ----Для вывода данных порциями используется
     два оператора:
@@ -339,7 +359,7 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
       .take(pageSize)
       .getManyAndCount();
 
-    /*    result: [Blogtyp[], number]     возвращает кортеж, 
+    /*    result: [Blogtyp[], number]     возвращает кортеж,
   где первый элемент - массив объектов, удовлетворяющих
    запросу, а второй элемент - общее количество записей
     в базе данных, удовлетворяющих условию запроса
@@ -368,7 +388,7 @@ pagesCount это число
 далее перед отправкой на фронтенд 
 приведу массив arrayPosts к тому виду
 который ожидает  фронтенд
- и добавлю информацию из 
+ и добавлю информацию из
 таблицы ЛАЙКИ к ПОСТАМ 
 
 */
@@ -394,7 +414,7 @@ pagesCount это число
        * name из таблицы blog  И ДЛЯ ДАННОГО ПОСТА БУДЕТ
        * СУЩЕСТВОВАТЬ ОДИН БЛОГ И У НЕГО ВОЗМУ ЕГО name ,
        * это фронту надо инфу отдать  *!/
-  
+
       const result = await this.dataSource.query(
         `
       select p.*,b.name
@@ -405,44 +425,44 @@ pagesCount это число
       `,
         [postId],
       );
-  
+
       if (result.length === 0) return null;
-  
+
       const post: CreatePostWithIdAndWithNameBlog = result[0];
-  
+
       /!* найду все записи из таблицы postlike
        для текущего поста
        ------сортировку по полю addedAt
        -------- сортировка в убывающем порядке , это означает, что самая первая запись будет самой новой записью*!/
-  
+
       const arrayPostLikeForOnePost: LikeStatusForPostWithId[] =
         await this.dataSource.query(
           `
       SELECT *
   FROM public.postlike plike
   WHERE plike."postId"=$1
-   ORDER BY plike."addedAt" DESC   
+   ORDER BY plike."addedAt" DESC
       `,
           [postId],
         );
-  
+
       /!*в arrayPostLike будет  массив --- если не найдет запись ,
      тогда ПУСТОЙ МАССИВ,   если найдет запись
      тогда в массиве будетут  обьекты *!/
-  
+
       const viewModelOnePostWithLikeInfo: PostWithLikesInfo =
         this.createViewModelOnePostWithLikeInfo(
           userId,
           post,
           arrayPostLikeForOnePost,
         );
-  
+
       return viewModelOnePostWithLikeInfo;
     }*/
 
   createViewModelOnePostWithLikeInfo(
     userId: string | null,
-    /* userId чтоб определить статус того 
+    /* userId чтоб определить статус того
   пользователя который данный запрос делает */
 
     post: Posttyp,
@@ -484,7 +504,7 @@ pagesCount это число
       const threeDocumentWithLike: LikeStatusForPostTyp[] =
         arrayStatusLike.slice(0, 3);
 
-      /*  надо узнать какой статус поставил пользователь данному посту, 
+      /*  надо узнать какой статус поставил пользователь данному посту,
   тот пользователь который данный запрос делает - его айдишка
    имеется */
 
@@ -502,8 +522,8 @@ pagesCount это число
 
       /*  на фронтенд надо отдать масив с тремя обьектами
       И ТУТ ОПРЕДЕЛЕННУЮ СТРУКТУРУ СОЗДАЮ
-        и в каждом обьекте информация об юзере 
-        котрый ПОСТАВИЛ ПОЛОЖИТЕЛЬНЫЙ ЛАЙК СТАТУС и они 
+        и в каждом обьекте информация об юзере
+        котрый ПОСТАВИЛ ПОЛОЖИТЕЛЬНЫЙ ЛАЙК СТАТУС и они
         были установлены самыми крайними*/
 
       const threeLatestLike: NewestLikes[] = threeDocumentWithLike.map(
