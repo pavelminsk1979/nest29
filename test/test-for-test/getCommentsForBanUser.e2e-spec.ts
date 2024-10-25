@@ -182,7 +182,7 @@ describe('tests for andpoint auth/logout', () => {
 
   it('get users', async () => {
     const res = await request(app.getHttpServer())
-      .get(`/blogger/users/blogs/${blogId}`)
+      .get(`/blogger/users/blog/${blogId}`)
       .set('Authorization', `Bearer ${accessToken}`)
 
       .expect(200);

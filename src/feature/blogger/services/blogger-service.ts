@@ -86,9 +86,17 @@ export class BloggerService {
 
     if (!blog) return false;
 
-    if (blog.usertyp && blog.usertyp.id !== userId) return false;
+    if (blog.usertyp && blog.usertyp.id !== userId) {
+      /*   403 статус код */
+      throw new ForbiddenException();
+    }
 
-    const login = blog.usertyp ? blog.usertyp.login : '';
+    const user =
+      await this.userSqlTypeormRepository.getUserById(userIdUriParam);
+
+    if (!user) return false;
+
+    const login = user.login;
 
     const newBanUser: CreateBanUser = {
       isBanned,

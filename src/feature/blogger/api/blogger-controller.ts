@@ -274,13 +274,12 @@ export class BloggerController {
   }
 
   @UseGuards(AuthTokenGuard)
-  @Get('users/blogs/:id')
+  @Get('users/blog/:id')
   async getAllBanBlogsForCorrectBlog(
     @Param('id') blogId: string,
     @Query() queryParamsBlogInputModel: QueryParamsInputModel,
     @Req() request: Request,
   ) {
-
     const userId: string = request['userId'];
 
     const blogs = await this.userBanQueryRepository.getBlogs(
@@ -288,7 +287,10 @@ export class BloggerController {
       userId,
       blogId,
     );
-
-    return blogs;
+    if (blogs) {
+      return blogs;
+    } else {
+      throw new NotFoundException();
+    }
   }
 }
