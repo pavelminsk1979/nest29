@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, Repository } from 'typeorm';
-import { QueryParamsInputModel } from '../../../common/pipes/query-params-input-model';
+import {
+  BanStatus,
+  QueryParamsInputModel,
+} from '../../../common/pipes/query-params-input-model';
 import { ViewUser } from '../api/types/views';
 import { CreateUserWithId } from '../api/types/dto';
 import { Usertyp } from '../domains/usertyp.entity';
@@ -21,6 +24,7 @@ export class UserQuerySqlRepository {
       pageSize,
       searchLoginTerm,
       searchEmailTerm,
+      banStatus,
     } = queryParams;
 
     /*   НАДО УКАЗЫВАТЬ КОЛИЧЕСТВО ПРОПУЩЕНЫХ 
@@ -40,24 +44,68 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
 
     const amountSkip = (pageNumber - 1) * pageSize;
 
-    const result = await this.usertypRepository.find({
-      where: [
-        { login: ILike(`%${searchLoginTerm}%`) },
-        { email: ILike(`%${searchEmailTerm}%`) },
-      ],
-      order: { [sortBy]: sortDirection }, //COLLATE "C"
+    let result: CreateUserWithId[] = [];
 
-      skip: amountSkip,
-      take: pageSize,
-    });
+    let totalCount: number = 0;
 
-    const totalCount = await this.usertypRepository.count({
-      where: [
-        { login: ILike(`%${searchLoginTerm}%`) },
-        { email: ILike(`%${searchEmailTerm}%`) },
-      ],
-    });
+    if (banStatus === BanStatus.ALL) {
+      result = await this.usertypRepository.find({
+        where: [
+          { login: ILike(`%${searchLoginTerm}%`) },
+          { email: ILike(`%${searchEmailTerm}%`) },
+        ],
+        order: { [sortBy]: sortDirection }, //COLLATE "C"
 
+        skip: amountSkip,
+        take: pageSize,
+      });
+
+      totalCount = await this.usertypRepository.count({
+        where: [
+          { login: ILike(`%${searchLoginTerm}%`) },
+          { email: ILike(`%${searchEmailTerm}%`) },
+        ],
+      });
+    } else {
+      debugger;
+      let ban;
+      if (BanStatus.BANNED === banStatus) {
+        ban = true;
+      } else {
+        ban = false;
+      }
+
+      result = await this.usertypRepository.find({
+        where: {
+          login: ILike(`%${searchLoginTerm}%`),
+          email: ILike(`%${searchEmailTerm}%`),
+          isBanned: ban,
+        },
+        /*[
+          { login: ILike(`%${searchLoginTerm}%`) },
+          { email: ILike(`%${searchEmailTerm}%`) },
+          { isBanned: ban },
+        ],*/
+        order: { [sortBy]: sortDirection }, //COLLATE "C"
+
+        skip: amountSkip,
+        take: pageSize,
+      });
+
+      totalCount = await this.usertypRepository.count({
+        where: {
+          login: ILike(`%${searchLoginTerm}%`),
+          email: ILike(`%${searchEmailTerm}%`),
+          isBanned: ban,
+        },
+        /* [
+          { login: ILike(`%${searchLoginTerm}%`) },
+          { email: ILike(`%${searchEmailTerm}%`) },
+          { isBanned: ban },
+        ],*/
+      });
+    }
+    debugger;
     /*
 pagesCount это (число)  общее количество страниц путем деления 
 общего количества документов на размер страницы (pageSize),

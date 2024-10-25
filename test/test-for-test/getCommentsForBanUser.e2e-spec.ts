@@ -97,37 +97,37 @@ describe('tests for andpoint auth/logout', () => {
     //console.log(accessToken);
   });
 
-  it('create   blog1', async () => {
-    const res = await request(app.getHttpServer())
-      .post('/blogger/blogs')
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        name: 'name11',
-        description: 'description11',
-        websiteUrl: 'https://www.outue11.com/',
-      })
-      .expect(201);
+  /*  it('create   blog1', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/blogger/blogs')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          name: 'name11',
+          description: 'description11',
+          websiteUrl: 'https://www.outue11.com/',
+        })
+        .expect(201);
+  
+      blogId = res.body.id;
+  
+      //console.log(res.body);
+    });*/
 
-    blogId = res.body.id;
-
-    //console.log(res.body);
-  });
-
-  it('create   post1', async () => {
-    const res = await request(app.getHttpServer())
-      .post(`/blogger/blogs/${blogId}/posts`)
-      .set('Authorization', `Bearer ${accessToken}`)
-      .send({
-        title: 'title11',
-        shortDescription: 'shortDescription11',
-        content: 'content-content-content-content',
-      })
-      .expect(201);
-
-    idPost = res.body.id;
-
-    //console.log(res.body);
-  });
+  /*  it('create   post1', async () => {
+      const res = await request(app.getHttpServer())
+        .post(`/blogger/blogs/${blogId}/posts`)
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send({
+          title: 'title11',
+          shortDescription: 'shortDescription11',
+          content: 'content-content-content-content',
+        })
+        .expect(201);
+  
+      idPost = res.body.id;
+  
+      //console.log(res.body);
+    });*/
 
   it('create user2', async () => {
     await request(app.getHttpServer())
@@ -154,7 +154,7 @@ describe('tests for andpoint auth/logout', () => {
     // console.log(userId);
   });
 
-  it('login  user', async () => {
+  it('login  user2', async () => {
     const res = await request(app.getHttpServer())
       .post('/auth/login')
       .send({
@@ -167,19 +167,29 @@ describe('tests for andpoint auth/logout', () => {
     //console.log(accessToken);
   });
 
-  it('create comment for post1 ', async () => {
-    const res = await request(app.getHttpServer())
-      .post(`/posts/${idPost}/comments`)
-      .set('Authorization', `Bearer ${accessToken2}`)
-      .send({
-        content: 'content2 for post content2 for post content2 for post',
-      })
-      .expect(201);
+  /*  it('get users', async () => {
+      const res = await request(app.getHttpServer())
+        .get('/sa/users')
+        .set('Authorization', `Basic ${loginPasswordBasic64}`)
+  
+        .expect(200);
+  
+      //console.log(res.body);
+    });*/
 
-    //console.log(res.body);
-
-    commentsId = res.body.id;
-  });
+  /*  it('create comment for post1 ', async () => {
+      const res = await request(app.getHttpServer())
+        .post(`/posts/${idPost}/comments`)
+        .set('Authorization', `Bearer ${accessToken2}`)
+        .send({
+          content: 'content2 for post content2 for post content2 for post',
+        })
+        .expect(201);
+  
+      //console.log(res.body);
+  
+      commentsId = res.body.id;
+    });*/
 
   /*  it('get correct comment', async () => {
       const res = await request(app.getHttpServer())
@@ -202,15 +212,25 @@ describe('tests for andpoint auth/logout', () => {
       .expect(204);
   });
 
-  it('get correct comment', async () => {
+  it('get users', async () => {
     const res = await request(app.getHttpServer())
-      .get(`/comments/${commentsId}`)
-      .set('Authorization', `Bearer ${accessToken}`)
+      .get('/sa/users?banStatus=banned')
+      .set('Authorization', `Basic ${loginPasswordBasic64}`)
 
-      .expect(404);
+      .expect(200);
 
-    //console.log(res.body);
+    console.log(res.body.items);
   });
+
+  /*  it('get correct comment', async () => {
+      const res = await request(app.getHttpServer())
+        .get(`/comments/${commentsId}`)
+        .set('Authorization', `Bearer ${accessToken}`)
+  
+        .expect(404);
+  
+      //console.log(res.body);
+    });*/
 });
 
 /*

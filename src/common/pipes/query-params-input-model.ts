@@ -6,7 +6,17 @@ export enum SortDirection {
   DESC = 'desc',
 }
 
+export enum BanStatus {
+  ALL = 'all',
+  BANNED = 'banned',
+  NOTBANNED = 'notBanned',
+}
+
 export class QueryParamsInputModel {
+  @IsEnum(BanStatus)
+  @IsOptional()
+  public banStatus: BanStatus = BanStatus.ALL;
+
   @IsOptional()
   @IsString()
   public searchEmailTerm: string = '';
