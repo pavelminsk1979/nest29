@@ -126,7 +126,7 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
 
         banInfo: {
           isBanned: blog.isBanned,
-          banDate: blog.banDate,
+          banDate: blog.banDate === '' ? null : blog.banDate,
         },
       };
     });
@@ -244,6 +244,7 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
           searchNameTerm: `%${searchNameTerm}%`,
         })
         .andWhere('b.usertyp = :userId', { userId })
+        .andWhere('b.isBanned = false')
         .orderBy(`b.${sortBy}`, sortDir)
         .skip(amountSkip)
         .take(pageSize)
@@ -254,6 +255,7 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
         .where('b.name ILIKE :searchNameTerm', {
           searchNameTerm: `%${searchNameTerm}%`,
         })
+        .andWhere('b.isBanned = false')
         .orderBy(`b.${sortBy}`, sortDir)
         .skip(amountSkip)
         .take(pageSize)
@@ -301,6 +303,8 @@ pagesCount это число
       .getOne();
 
     if (!result) return null;
+
+    if (result.isBanned) return null;
 
     return {
       id: result.id,

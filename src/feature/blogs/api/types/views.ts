@@ -14,7 +14,7 @@ export type BlogOwnerInfo = {
 
 type BanInfo = {
   isBanned: boolean;
-  banDate: string;
+  banDate: string | null;
 };
 
 export type ViewBlogWithUserInfo = {

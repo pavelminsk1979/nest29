@@ -167,6 +167,8 @@ pagesCount это число
 
     if (!result) return null;
 
+    if (result.blogtyp.isBanned) return null;
+
     /* найду все записи из таблицы LikeStatusForPostTyp
     для текущего поста по postId
     и должно быть добавлено ЗАДЖОЙНЕНО
