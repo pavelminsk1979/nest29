@@ -30,6 +30,8 @@ export class BloggerService {
       createdAt: new Date().toISOString(),
       isMembership: false,
       usertyp: user,
+      isBanned: false,
+      banDate: '',
     };
 
     return this.blogSqlTypeormRepository.createNewBlogForCorrectUser(newBlog);

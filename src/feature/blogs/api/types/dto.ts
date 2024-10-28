@@ -7,6 +7,8 @@ export type CreateBlog = {
   createdAt: string;
   isMembership: boolean;
   usertyp: Usertyp | null;
+  isBanned: boolean;
+  banDate: string;
 };
 
 export type CreateBlogWithId = {
@@ -16,6 +18,8 @@ export type CreateBlogWithId = {
   websiteUrl: string;
   createdAt: string;
   isMembership: boolean;
+  isBanned: boolean;
+  banDate: string;
 };
 
 export type SortDir = 'ASC' | 'DESC';

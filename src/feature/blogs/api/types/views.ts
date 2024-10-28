@@ -12,6 +12,11 @@ export type BlogOwnerInfo = {
   userLogin: string | null;
 };
 
+type BanInfo = {
+  isBanned: boolean;
+  banDate: string;
+};
+
 export type ViewBlogWithUserInfo = {
   id: string;
   name: string;
@@ -20,6 +25,7 @@ export type ViewBlogWithUserInfo = {
   createdAt: string;
   isMembership: boolean;
   blogOwnerInfo: BlogOwnerInfo;
+  banInfo: BanInfo;
 };
 
 export type ViewArrayBlog = {

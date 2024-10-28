@@ -30,6 +30,8 @@ import { BlogQuerySqlTypeormRepository } from '../repositories/blog-query-sql-ty
 import { PostQuerySqlTypeormRepository } from '../../posts/repositories/post-query-sql-typeorm-repository';
 import { DataUserExtractorFromTokenGuard } from '../../../common/guard/data-user-extractor-from-token-guard';
 import { AddBlogToUserCommand } from '../services/add-blog-to-user-service';
+import { UpdateBanStatusForBlogInputModel } from './pipes/update-ban-status-for-blog-input-model';
+import { BlogBanService } from '../services/blog-ban-service';
 
 @Controller('sa/blogs')
 export class SaBlogController {
@@ -42,6 +44,7 @@ export class SaBlogController {
     protected postService: PostService,
     protected blogQuerySqlTypeormRepository: BlogQuerySqlTypeormRepository,
     protected postQuerySqlTypeormRepository: PostQuerySqlTypeormRepository,
+    protected blogBanService: BlogBanService,
   ) {}
 
   /*Nest.js автоматически возвращает следующие
@@ -320,6 +323,28 @@ export class SaBlogController {
     } else {
       throw new NotFoundException(
         'NotFound:andpoint-put ,url -/sa/blogs/:blogId/bind-with-user/:userId',
+      );
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Put(':id/ban')
+  async setBanStatusForBlog(
+    @Param('id') blogIdUriParam: string,
+    @Body()
+    updateBanStatusForBlogInputModel: UpdateBanStatusForBlogInputModel,
+  ) {
+    const isSetBanStatusForBlog = await this.blogBanService.setBanStatusForBlog(
+      blogIdUriParam,
+      updateBanStatusForBlogInputModel,
+    );
+
+    if (isSetBanStatusForBlog) {
+      return;
+    } else {
+      throw new NotFoundException(
+        'blog not update:andpoint-put ,url /blogs/id',
       );
     }
   }

@@ -123,6 +123,11 @@ pageSize - размер  одной страницы, ПО УМОЛЧАНИЮ 10
           userId: blog && blog.usertyp ? blog.usertyp.id : null,
           userLogin: blog && blog.usertyp ? blog.usertyp.login : null,
         },
+
+        banInfo: {
+          isBanned: blog.isBanned,
+          banDate: blog.banDate,
+        },
       };
     });
 

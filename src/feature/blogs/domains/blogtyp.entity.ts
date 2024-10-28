@@ -35,6 +35,12 @@ export class Blogtyp {
   @Column()
   isMembership: boolean;
 
+  @Column()
+  public banDate: string;
+
+  @Column()
+  public isBanned: boolean;
+
   @ManyToOne(() => Usertyp, (usertyp) => usertyp.blogtyp, { nullable: true })
   public usertyp: Usertyp | null;
 

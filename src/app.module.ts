@@ -102,6 +102,7 @@ import { AddBlogToUserService } from './feature/blogs/services/add-blog-to-user-
 import { UserBan } from './feature/blogger/domains/user-ban.entity';
 import { UserBanRepository } from './feature/blogger/repositories/user-ban-repository';
 import { UserBanQueryRepository } from './feature/blogger/repositories/user-ban-query-repository';
+import { BlogBanService } from './feature/blogs/services/blog-ban-service';
 
 dotenv.config();
 
@@ -378,6 +379,7 @@ dotenv.config();
     AddBlogToUserService,
     UserBanRepository,
     UserBanQueryRepository,
+    BlogBanService,
   ],
 })
 /*export class AppModule {} в данном контексте

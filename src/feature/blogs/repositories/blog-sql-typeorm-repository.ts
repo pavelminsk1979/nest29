@@ -12,6 +12,13 @@ export class BlogSqlTypeormRepository {
     private readonly blogtypRepository: Repository<Blogtyp>,
   ) {}
 
+  async changeBlog(blog: CreateBlog) {
+    const result = await this.blogtypRepository.save(blog);
+
+    if (!result) return false;
+    return true;
+  }
+
   async addBlogToUser(blogId: string, userId: string) {
     const result = await this.blogtypRepository
       .createQueryBuilder()
@@ -41,6 +48,8 @@ export class BlogSqlTypeormRepository {
         description: newBlog.description,
         websiteUrl: newBlog.websiteUrl,
         usertyp: newBlog.usertyp ? newBlog.usertyp : null,
+        isBanned: newBlog.isBanned,
+        banDate: newBlog.banDate,
       })
       .execute();
 
@@ -58,6 +67,8 @@ export class BlogSqlTypeormRepository {
         name: newBlog.name,
         description: newBlog.description,
         websiteUrl: newBlog.websiteUrl,
+        isBanned: newBlog.isBanned,
+        banDate: newBlog.banDate,
       })
       .execute();
 
