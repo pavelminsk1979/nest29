@@ -199,7 +199,7 @@ pagesCount это число
         будет делатся ВЬЮМОДЕЛЬ которую ожидает 
         фронтенд, внутри будет информация об 
         посте и об лайках к этому посту*/
-
+      debugger;
       if (arrayCommentLikeManyCoomentId.length === 0) {
         const viewCommentWithInfoLike =
           this.createViewModelOneCommentWithLikeInfoWithPostInfo(
@@ -236,7 +236,9 @@ pagesCount это число
     comment: Commenttyp,
     arrayCommentLikeForCorrectComment: LikeStatusForCommentTyp[],
   ) {
+    debugger;
     if (arrayCommentLikeForCorrectComment.length === 0) {
+      debugger;
       return {
         id: comment.id,
         content: comment.content,
@@ -253,7 +255,7 @@ pagesCount это число
         postInfo: {
           id: comment.posttyp.id,
           title: comment.posttyp.title,
-          blogId: comment.posttyp.blogtyp.id,
+          blogId: comment.posttyp.blogId,
           blogName: comment.posttyp.blogName,
         },
       };
@@ -298,7 +300,7 @@ pagesCount это число
         postInfo: {
           id: comment.posttyp.id,
           title: comment.posttyp.title,
-          blogId: comment.posttyp.blogtyp.id,
+          blogId: comment.posttyp.blogId,
           blogName: comment.posttyp.blogName,
         },
       };
@@ -312,7 +314,6 @@ pagesCount это число
   //////////////////////////////////////////////////////////
 
   async getCommentById(userId: string | null, commentId: string) {
-    debugger;
     if (userId) {
       /* если  юзер забанен то не должен возвратить коментарий */
 

@@ -39,5 +39,8 @@ export class Posttyp {
   blogName: string;
 
   @Column()
+  blogId: string;
+
+  @Column()
   createdAt: string;
 }

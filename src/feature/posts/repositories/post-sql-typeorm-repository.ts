@@ -24,6 +24,7 @@ export class PostSqlTypeormRepository {
         createdAt: newPost.createdAt,
         blogName: newPost.blogName,
         blogtyp: newPost.blogtyp,
+        blogId:newPost.blogId
       })
       .execute();
 

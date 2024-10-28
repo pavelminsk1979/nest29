@@ -28,6 +28,7 @@ export type CreatePostTypeorm = {
   createdAt: string;
   blogtyp: Blogtyp;
   blogName: string;
+  blogId:string
 };
 
 export type CreateLikeStatusForPost = {

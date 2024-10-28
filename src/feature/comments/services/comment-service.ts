@@ -8,9 +8,7 @@ import {
   LikeStatusForCommentDocument,
 } from '../../like-status-for-comment/domain/domain-like-status-for-comment';
 import { CreateCommentTyp } from '../api/types/dto';
-import { CommentSqlRepository } from '../reposetories/comment-sql-repository';
 import { LikeStatusForCommentCreateTyp } from '../../like-status-for-comment/types/dto';
-import { LikeStatusForCommentSqlRepository } from '../../like-status-for-comment/repositories/like-status-for-comment-sql-repository';
 import { PostSqlTypeormRepository } from '../../posts/repositories/post-sql-typeorm-repository';
 import { UserSqlTypeormRepository } from '../../users/repositories/user-sql-typeorm-repository';
 import { CommentSqlTypeormRepository } from '../reposetories/comment-sql-typeorm-repository';

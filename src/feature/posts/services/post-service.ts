@@ -144,6 +144,7 @@ export class PostService {
       createdAt: new Date().toISOString(),
       blogName: blog.name,
       blogtyp: blog,
+      blogId: blog.id,
     };
 
     return this.postSqlTypeormRepository.createPost(newPost);
@@ -167,6 +168,7 @@ export class PostService {
       createdAt: new Date().toISOString(),
       blogName: blog.name,
       blogtyp: blog,
+      blogId: blog.id,
     };
 
     const postId = await this.postSqlTypeormRepository.createPost(newPost);
