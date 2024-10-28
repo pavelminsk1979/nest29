@@ -26,6 +26,7 @@ import { ViewModelWithArrayPosts } from '../../posts/api/types/views';
 import { UpdatePostForCorrectBlogInputModel } from '../../posts/api/pipes/update-post-for-correct-blog-input-model';
 import { UpdateBanStatusWithBlogIdInputModel } from '../../users/api/pipes/update-ban-status-with-blogId-input-model';
 import { UserBanQueryRepository } from '../repositories/user-ban-query-repository';
+import { CommentQuerySqlTypeormRepository } from '../../comments/reposetories/comment-query-sql-typeorm-repository';
 
 @Controller('blogger')
 export class BloggerController {
@@ -35,6 +36,7 @@ export class BloggerController {
     protected postService: PostService,
     protected postQuerySqlTypeormRepository: PostQuerySqlTypeormRepository,
     protected userBanQueryRepository: UserBanQueryRepository,
+    protected commentQuerySqlTypeormRepository: CommentQuerySqlTypeormRepository,
   ) {}
 
   @UseGuards(AuthTokenGuard, DataUserExtractorFromTokenGuard)
@@ -292,5 +294,22 @@ export class BloggerController {
     } else {
       throw new NotFoundException();
     }
+  }
+
+  @UseGuards(AuthTokenGuard)
+  @Get('blogs/comments')
+  async getAllCommentsAllPostsAllBlogsCorrectUser(
+    @Query() queryParamsBlogInputModel: QueryParamsInputModel,
+    @Req() request: Request,
+  ) {
+    const userId: string = request['userId'];
+
+    const allCommentsAllPostsAllBlogsCorrectUser =
+      await this.commentQuerySqlTypeormRepository.getAllCommentsAllPostsAllBlogsCorrectUser(
+        queryParamsBlogInputModel,
+        userId,
+      );
+
+    return allCommentsAllPostsAllBlogsCorrectUser;
   }
 }

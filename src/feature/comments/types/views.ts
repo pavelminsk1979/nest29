@@ -26,3 +26,27 @@ export type ViewArrayComments = {
   totalCount: number;
   items: CommentWithLikeInfo[];
 };
+
+type PostInfo = {
+  id: string;
+  title: string;
+  blogId: string;
+  blogName: string;
+};
+
+export type CommentWithLikeInfoWithPostInfo = {
+  id: string;
+  content: string;
+  commentatorInfo: CommentatorInfo;
+  createdAt: string;
+  likesInfo: LikesInfo;
+  postInfo: PostInfo;
+};
+
+export type ViewArrayCommentsWithLikeInfoWithPostInfo = {
+  pagesCount: number;
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  items: CommentWithLikeInfoWithPostInfo[];
+};
